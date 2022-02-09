@@ -3,20 +3,35 @@ import { useState, useEffect } from 'react';
 import { fetchPokemon } from '../services/fetch-utils';
 
 export default function Landing() {
-  const Page = 1;
-  const From = (Page - 1) * 50 + 1;
-  const To = Page * 50;
+  const [page, setPage] = useState(1);
+  const From = (page - 1) * 50;
+  const To = page * 50;
   const [pokemon, setPokemon] = useState();
 
   const pokes = JSON.stringify(pokemon);
-  console.log(pokes);
+
   useEffect(() => {
     const pokeBall = async () => {
-      const openBall = await fetchPokemon();
+      const openBall = await fetchPokemon(From, To);
       setPokemon(openBall);
+      console.log(page);
     };
     pokeBall();
-  }, []);
-  console.log(pokemon);
-  return <div></div>;
+  }, [page]);
+
+  const handleIncrement = () => {
+    setPage(page + 1);
+  };
+
+  const handleDecrement = () => {
+    setPage(page - 1);
+  };
+  console.log(pokes);
+  console.log(page, From, To);
+  return (
+    <div>
+      <button onClick={handleIncrement}>Increment</button>
+      <button onClick={handleDecrement}>Decrement</button>
+    </div>
+  );
 }
