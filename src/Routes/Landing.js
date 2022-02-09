@@ -1,23 +1,20 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
+import Pokedex from '../Components/Pokedex';
 import { fetchPokemon } from '../services/fetch-utils';
 
 export default function Landing() {
   const [page, setPage] = useState(1);
+  const [pokemon, setPokemon] = useState([]);
   const From = (page - 1) * 50;
-  const To = page * 50;
-  const [pokemon, setPokemon] = useState();
-
-  const pokes = JSON.stringify(pokemon);
-
+  const To = page * 50 - 1;
   useEffect(() => {
     const pokeBall = async () => {
       const openBall = await fetchPokemon(From, To);
       setPokemon(openBall);
-      console.log(page);
     };
     pokeBall();
-  }, [page]);
+  }, [From, To]);
 
   const handleIncrement = () => {
     setPage(page + 1);
@@ -26,12 +23,17 @@ export default function Landing() {
   const handleDecrement = () => {
     setPage(page - 1);
   };
-  console.log(pokes);
-  console.log(page, From, To);
+  console.log(pokemon);
+  //   console.log(page, From, To);
   return (
     <div>
-      <button onClick={handleIncrement}>Increment</button>
-      <button onClick={handleDecrement}>Decrement</button>
+      <button disabled={page === 1} onClick={handleDecrement}>
+        Previous Page
+      </button>
+      <button disabled={pokemon.length < 50} onClick={handleIncrement}>
+        Next Page
+      </button>
+      <Pokedex pokes={pokemon} />
     </div>
   );
 }
